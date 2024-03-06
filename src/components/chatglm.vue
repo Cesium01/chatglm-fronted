@@ -2,9 +2,15 @@
   <el-container>
     <el-main class="chat-container" v-show="messages.length>0">
       <div class="chat-history" ref="chatHistory">
-        <div v-for="message in messages" :key="message.id" class="message">
-          <el-card v-if="message.sender === 'user'" class="user-message" shadow="hover">{{ message.text }}</el-card>
-          <el-card v-else class="bot-message" shadow="hover">{{ message.text }}</el-card>
+        <div v-for="message in messages" :key="message.id">
+          <div v-if="message.sender === 'user'" class="message-line">
+            <el-card  class="user-message" shadow="hover">{{ message.text }}</el-card>
+            <el-avatar :size="50" src="ava.jpg" style="margin: 10px"/>
+          </div>
+          <div v-else class="message-line">
+            <el-avatar :size="50" src="ava.jpg" style="margin: 10px"/>
+            <el-card class="bot-message" shadow="hover">{{ message.text }}</el-card>
+          </div>
         </div>
       </div>
       <div id="history-end"></div>
@@ -54,11 +60,11 @@
   
   <style scoped>
   .chat-container {
-    width: 500px;
+    width: auto;
     max-height: 85vh;
     margin: auto;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+    /* border: 1px solid #ccc;
+    border-radius: 10px; */
     padding: 10px;
     overflow-y:auto;
   }
@@ -80,19 +86,28 @@
     width:80%;
   }
   
-  .message {
-    margin-bottom: 10px;
+  .message-line {
+    display: flex;
+    margin: 10px;
   }
   
   .user-message {
     background-color: #f0f0f0;
     padding: 5px 10px;
     border-radius: 5px;
+    max-width: 75%;
+    margin-left: auto;
+    word-wrap:break-word;
+    word-break:normal;
   }
   
   .bot-message {
     background-color: #d9edf7;
     padding: 5px 10px;
     border-radius: 5px;
+    max-width: 75%;
+    margin-right: auto;
+    word-wrap:break-word;
+    word-break:normal;
   }
   </style>

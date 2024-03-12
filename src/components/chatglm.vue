@@ -17,14 +17,16 @@
     </el-main>
     <div class="tip" v-if="messages.length===0">How can I help you?</div>
     <el-footer class="sendarea">
-      <el-input class="textarea" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }" v-model="userMessage" @keyup.enter="sendMessage" placeholder="Type your message..."></el-input>
+      <el-input class="textarea" type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="userMessage" @keyup.enter="sendMessage" placeholder="Type your message..."></el-input>
       <el-button type="primary" @click="sendMessage">发送</el-button>
     </el-footer>
   </el-container>
 </template>
   
   <script>
-  //import axios from 'axios';
+  import axios from 'axios';
+
+  axios.defaults.timeout = 15000;
   
   export default {
     name: 'ChatGLM',
@@ -39,15 +41,21 @@
         if (this.userMessage.trim() === '') return;
         
         this.messages.push({ id: this.messages.length, sender: 'user', text: this.userMessage });
-        //const response = await axios.post('http://localhost:5000/chat', { message: this.userMessage });
-        const response = {data: 'this is a fake response.this is a fake response.this is a fake response.this is a fake response.this is a fake response.'};
-        const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-        
+        this.scrollToBottom();
+        let tmp = this.userMessage;
         this.userMessage = '';
+        try{
+          const response = await axios.post('http://localhost:5000/chat', { message: tmp });
+          //await sleep(1000);
+          this.messages.push({ id: this.messages.length, sender: 'bot', text: response.data.data });
+        } catch(e) {
+          console.log(e)
+          window.alert(e.message)
+        }
+        //const response = {data: 'this is a fake response.this is a fake response.this is a fake response.this is a fake response.this is a fake response.'};
+        //const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
         this.scrollToBottom();
-        await sleep(3000);
-        this.messages.push({ id: this.messages.length, sender: 'bot', text: response.data });
-        this.scrollToBottom();
+        
       },
       scrollToBottom() {
         setTimeout(() => {
